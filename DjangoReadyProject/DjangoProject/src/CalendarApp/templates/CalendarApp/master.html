@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<html>
+	<head>
+		<title>Calendar Application</title>
+		<link rel="stylesheet" type="text/css" href="{% static 'CalendarApp/style.css' %}" />
+	</head>
+	<body>
+		<h1 style="text-align:center;">This is Calendar Application - Welcome</h1>
+		<a href="./register">Registration</a>
+		<a href="./logout">Log Out</a>
+		<!-- <form action="./login" method="POST">
+			<table>
+			{{ loginform.as_table }}
+			</table>
+			<input type="submit" value="submit">
+		</form>-->
+		{% block content %}
+		{% endblock %}
+	</body>
+</html>

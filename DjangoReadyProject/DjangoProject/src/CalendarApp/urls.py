@@ -7,4 +7,7 @@ urlpatterns = patterns('',
     url(r'^(?P<poll_id>\d+)$', views.detail, name='detail'),
     url(r'^results/(?P<poll_id>\d+)$', views.results, name='results'),
     url(r'^vote/(?P<poll_id>\d+)$', views.vote, name='vote'),
+    url(r'^login', views.login, name='login'),
+    url(r'^register', views.register, name='register'),
+    url(r'^logout', views.logout_view, name='logout'),
 )
