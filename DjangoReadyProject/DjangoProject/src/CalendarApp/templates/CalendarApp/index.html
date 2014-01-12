@@ -1,6 +1,9 @@
 {% extends "CalendarApp/master.html" %}
 {% block content %}
-<h1 style="text-align:center; float:left;"> 
+<h1 style="text-align:center; float:left;">
+{% if LoggedIn == True %}
+<li><a href="./logout">Log Out {{ Nick }}</a></li>
+{% endif %}
 	{{ Message }}
 	{{ welcome }}
 	<li><a href="./login">Logowanie</a></li>
