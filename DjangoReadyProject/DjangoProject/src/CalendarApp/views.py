@@ -7,7 +7,7 @@ from django.contrib.auth import logout,authenticate,login
 from DataUtil import Page,GeneratePassword
 from CalendarApp.forms import LoginForm,RegisterForm, ChangePasswordForm
 from CalendarApp.models import Accounts
-from CalendarApp.DataUtil import SendGeneretatedPassword
+from CalendarApp.DataUtil import SendGeneretatedPassword,SendGGMessage
 from django.contrib.sessions.models import Session
 from django.http.response import HttpResponseRedirect
 
@@ -48,11 +48,11 @@ def login_view(request):
             else:
                 if user.is_active:
                     login(request, user)
-                    nextParam = request.REQUEST['next']
+                    nextParam = request.GET.get('next', None)
                     if nextParam is not None:
                         renderer = HttpResponseRedirect(nextParam)
                     else:
-                        renderer = render_to_response(Page['Index'],{'welcome':'You are logged in - welcome','LoggedIn':user is not None,'Nick':nick})
+                        renderer = HttpResponseRedirect('/calendar/')
                 else:
                     renderer = render_to_response(Page['Login'],{'message':'Your login or password is correct but your account is not active','form':LoginForm()})
         else:
@@ -128,3 +128,15 @@ def changepassword(request):
         else:
             render = render_to_response(Page['PasswordChange'], {'form':form})
     return render
+
+def ggmessage_view(request):
+    try:
+        key = request.session.session_key
+        session = Session.objects.get(session_key = key)
+        uid = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=uid)
+        username = user.username
+        SendGGMessage(username)
+        return HttpResponse('Wyslanie wiadomosci na gg powiodlo sie')
+    except Exception,e:
+        return HttpResponse('Blad w ggmessage_view {0}'.format(e.message))

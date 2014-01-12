@@ -9,7 +9,10 @@ from itertools import chain
 from random import seed, choice, sample
 import smtplib
 from django.contrib.auth.models import User
-
+from GGLibrary.Exceptions import GGNotLogged
+from GGLibrary.pygglib import GGSession
+#from GGConstans import *
+#from Contacts import *
 Page = {
     'Master':'CalendarApp/master.html',
     'Index':'CalendarApp/index.html',
@@ -64,18 +67,36 @@ def GeneratePassword(length=21, digits=3, upper=3, lower=3):
 
 #based on example from http://stackoverflow.com/questions/10147455/trying-to-send-email-gmail-as-mail-provider-using-python
 def SendGeneretatedPassword(Login, Password):
-    fromaddr = 'djangocalendar@gmail.com'
-    u = User.objects.get(username=Login)
-    toaddrs  = u.email
-    msg = Messages['FirstPass'].format(Password)
-    username = 'djangocalendar@gmail.com'
-    password = 'Master1234'
-    server = smtplib.SMTP('smtp.gmail.com:587')
-    server.ehlo()
-    server.starttls()
-    server.login(username,password)
-    server.sendmail(fromaddr, toaddrs, msg)
-    server.quit()    
+    try:
+        fromaddr = 'djangocalendar@gmail.com'
+        u = User.objects.get(username=Login)
+        toaddrs  = u.email
+        msg = Messages['FirstPass'].format(Password)
+        username = 'djangocalendar@gmail.com'
+        password = 'Master1234'
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo()
+        server.starttls()
+        server.login(username,password)
+        server.sendmail(fromaddr, toaddrs, msg)
+        server.quit()
+    except Exception,e:
+        raise Exception("Exception from Password Sender : {0} \n".format(e.message))
 
-
+#GG Number:49651904
+#PWD: Master1234    
+#based on example from https://boty.gg.pl/przyklady/ - example 5  
+def SendGGMessage(Login):
+    try:
+        u = User.objects.get(username=Login)
+        uA = u.accounts
+        userGG = uA.GGNumber
+        gg = GGSession(49651904, 'Master1234')
+        gg.login()
+        gg.send_msg(int(userGG),'Testowa wiadomosc z bota do projektu z AMSI dla uzytkownika {0} ;)'.format(Login))
+        gg.logout()
+    except GGNotLogged:
+        return True
+    except Exception,e:
+        raise Exception("Exception from GG Message Sender : {0}.\n".format(e.message))
 
