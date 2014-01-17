@@ -75,9 +75,12 @@ def register(request):
         regForm = RegisterForm(request.POST)
         if regForm.is_valid():
             inf = regForm.cleaned_data
+            email1 = inf['Email']
+            testUser = User.objects.filter(email=email1)
+            if testUser is not None:
+                return render_to_response(Page['Register'], {'error':'Account Not Created. \n There is already account on this email','form':regForm})
             login = inf['Login']
             passw= GeneratePassword()
-            email1 = inf['Email']
             firstName = inf['FirstName']
             lastName = inf['LastName']
             ggnumber = inf['GGNumber']
