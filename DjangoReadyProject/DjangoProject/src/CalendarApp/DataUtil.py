@@ -11,14 +11,15 @@ import smtplib
 from django.contrib.auth.models import User
 from GGLibrary.Exceptions import GGNotLogged
 from GGLibrary.pygglib import GGSession
-#from GGConstans import *
-#from Contacts import *
+from django.contrib.sessions.models import Session
+
 Page = {
     'Master':'CalendarApp/master.html',
     'Index':'CalendarApp/index.html',
     'Login':'CalendarApp/login.html',
     'Register':'CalendarApp/register.html',
-    'PasswordChange': 'CalendarApp/passwordchange.html'
+    'PasswordChange': 'CalendarApp/passwordchange.html',
+    'UserNameChange': 'CalendarApp/usernamechange.html',
     }
 
 Messages = {
@@ -100,3 +101,21 @@ def SendGGMessage(Login):
     except Exception,e:
         raise Exception("Exception from GG Message Sender : {0}.\n".format(e.message))
 
+#Get Actually Logged User
+def GetLoggedUser(request):
+    try:
+        key = request.session.session_key
+        session = Session.objects.get(session_key = key)
+        uid = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=uid)
+        return user
+    except Exception:
+        return None
+    
+#Get Actually Logged User
+def GetUserByUserName(username):
+    try:
+        user = User.objects.get(username=username)
+        return user
+    except Exception:
+        return None

@@ -5,11 +5,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout,authenticate,login
 from DataUtil import Page,GeneratePassword
-from CalendarApp.forms import LoginForm,RegisterForm, ChangePasswordForm
+from CalendarApp.forms import LoginForm,RegisterForm, ChangePasswordForm,\
+    ChangeUserNameForm
 from CalendarApp.models import Accounts
 from CalendarApp.DataUtil import SendGeneretatedPassword,SendGGMessage
 from django.contrib.sessions.models import Session
 from django.http.response import HttpResponseRedirect
+from CalendarApp import DataUtil
 
 
 def index(request):
@@ -130,6 +132,31 @@ def changepassword(request):
         else:
             render = render_to_response(Page['PasswordChange'], {'form':form})
     return render
+
+@login_required
+@csrf_exempt
+def changeusername(request):
+    if request.method == 'POST':
+        form = ChangeUserNameForm(request.POST)
+        if form.is_valid():
+            cd  = form.cleaned_data
+            NewUserName = DataUtil.GetUserByUserName(cd['NewUsername'])
+            if NewUserName is not None:
+                renderer = render_to_response(Page['UserNameChange'],{'form':form,'message':'This login already exists in database'})
+            else:
+                user = DataUtil.GetLoggedUser(request)
+                if user is not None:
+                    user.username = cd['NewUsername']
+                    user.save()
+                    renderer = logout(request)
+                    renderer = HttpResponseRedirect('/calendar/')
+                else:
+                    renderer = render_to_response(Page['UserNameChange'],{'form':form,'message':'This is not possible that you are logged in'})
+        else:
+            renderer = render_to_response(Page['UserNameChange'],{'form':form})         
+    else:
+        renderer = render_to_response(Page['UserNameChange'],{'form':ChangeUserNameForm()})
+    return renderer;
 
 def ggmessage_view(request):
     try:

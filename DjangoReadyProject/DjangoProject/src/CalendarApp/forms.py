@@ -25,3 +25,6 @@ class ChangePasswordForm(forms.Form):
                                error_messages={'required':'This is required field','max_length':'Password is to long - max 30','min_length':'You password is too short - at least 10 characters'})
     RepeatNewPassword =forms.CharField(widget=forms.PasswordInput(render_value=False), label='Repeat New Password:', max_length=30,min_length = 10, required=True,
                                error_messages={'required':'This is required field','max_length':'Password is to long - max 30','min_length':'You password is too short - at least 10 characters'})
+    
+class ChangeUserNameForm(forms.Form):
+    NewUsername = forms.CharField(required=True, label='New User Name:',min_length=6,max_length=50, error_messages={'required': 'This is required field', 'max_length':'Login is to long - max 50', 'min_length': 'You login is too short - at least 6 characters'})    
