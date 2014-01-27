@@ -1,0 +1,70 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>View/edit account details</title>
+   <link href="{% static 'CalendarApp/jquery-ui.css' %}" rel="stylesheet">
+   <link href="{% static 'CalendarApp/bootstrap.css' %}" rel="stylesheet">
+<link href="{% static 'CalendarApp/signin.css' %}" rel="stylesheet">
+<script src="{% static 'CalendarApp/js/jquery-2.0.3.min.js' %}"></script>
+<script src="{% static 'CalendarApp/js/jquery-ui.js' %}"></script>
+  <script>
+  $(function() {
+    $( "#tabs" ).tabs();
+  });
+  </script>
+  <style>
+  <!--
+  body {
+  padding-top: 0px;
+  }
+  --></style>
+</head>
+<body>
+ 
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Account details</a></li>
+    <li><a href="#tabs-2">Change password</a></li>
+    <li><a href="#tabs-3">Manage your account</a></li>
+  </ul>
+  <div id="tabs-1">
+   
+    <div class="container">
+
+      <form class="form-signin" role="form">
+        <h2 class="form-signin-heading">Account details</h2>
+        <input type="text" class="form-control" placeholder="Name" required autofocus>
+        <input type="text" class="form-control" placeholder="Surname" required autofocus>
+     
+        <input type="text" class="form-control" placeholder="Email address" required autofocus>
+       <input type="text" class="form-control" placeholder="Facebook id" required autofocus>
+       <input type="text" class="form-control" placeholder="GG number" required autofocus>
+    
+         <label class="checkbox">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+      </form>
+    </div> <!-- /container -->
+  </div>
+  <div id="tabs-2">
+   <form class="form-signin" role="form">
+        <h2 class="form-signin-heading">Change password</h2>
+        <input type="password" class="form-control" placeholder="Old password" required>
+        <input type="password" class="form-control" placeholder="New password" required>
+        <input type="password" class="form-control" placeholder="Re type new password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+      </form>
+
+  </div>
+  <div id="tabs-3">
+    <form class="form-signin" role="form">
+            <h2 class="form-signin-heading">Remove your account</h2>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Remove account</button>
+      </form>
+  </div>
+</div>
+ 
+ 
+</body>
+</html>

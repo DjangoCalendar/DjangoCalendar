@@ -1,8 +1,41 @@
-<b>If you not have account <a href="/calendar/register">Register</a></b>
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Login</title>
+    <link href="{% static 'CalendarApp/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'CalendarApp/signin.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container">
+      <form class="form-signin" action="" role="form">
+        <h2 class="form-signin-heading">Please log in</h2>
+        <input type="text" class="form-control" placeholder="Email address" required autofocus>
+        <input type="password" class="form-control" placeholder="Password" required>
+        <label class="checkbox">
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+<br><b>If you not have account <a href="./register">Register</a></b>
 {{ message }}
-<form action="" method="POST">
-	<table>
+<!-- aby to sie ladnie wyswietlalo trzeba to przerobic dlatego wrzucam html
+<table>
 		{{ form.as_table }}
-	</table>
-	<input type="submit" value="submit">
-</form>
+</table>
+ -->
+      </form>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  </body>
+</html>

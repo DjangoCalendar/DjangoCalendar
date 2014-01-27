@@ -18,7 +18,8 @@ Page = {
     'Index':'CalendarApp/index.html',
     'Login':'CalendarApp/login.html',
     'Register':'CalendarApp/register.html',
-    'PasswordChange': 'CalendarApp/passwordchange.html'
+    'PasswordChange': 'CalendarApp/passwordchange.html',
+    'Accountdetails': 'CalendarApp/accountdetails.html'
     }
 
 Messages = {

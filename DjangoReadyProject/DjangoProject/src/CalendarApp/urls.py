@@ -12,4 +12,6 @@ urlpatterns = patterns('',
     url(r'^logout', views.logout_view, name='logout'),
     url(r'^changepassword', views.changepassword, name='changepassword'),
     url(r'^ggmessage', views.ggmessage_view, name='ggmessage'),
+    url(r'^accountdetails', views.accountdetails, name='accountdetails'),
+    
 )
