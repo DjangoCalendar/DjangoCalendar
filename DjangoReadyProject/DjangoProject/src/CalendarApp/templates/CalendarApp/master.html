@@ -26,68 +26,19 @@
         </div>
         <div class="navbar-collapse collapse">
 <ul class="nav navbar-nav">
-      <li class="active"><a href="login">Login</a></li>
-      <li><a href="register">Register</a></li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other<b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <li><a href="accountdetails">Account details</a></li>
-          <li><a href="#">Bla bla</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Bla bla</a></li>
-        </ul>
-      </li>
+      {% block userMenu %}
+      {% endblock %}
     </ul>
-          <form class="navbar-form navbar-right" action="./login" method="POST" role="form">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
+<ul class="nav navbar-nav navbar-right">
+       {% block userInfo %}
+      {% endblock %}
+      </ul>
         </div><!--/.navbar-collapse -->
       </div>
     </div>
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Welcome to DJango Calendar</h1>
-        <p>This is the main page of the project. Ave.</p>
-        <p><a class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a></p>
-      </div>
-    </div>
-
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-md-4">
-          <h2>About the procjet</h2>
-          <p>This project was created by Mateusz Bacal, Michal Kaminski and Wojciech Kura</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Concept of the project</h2>
-          <p>Concept of the project is unknown.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-       </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-      </div>
-
-      <hr>
-
-      <footer>
-        <p>&copy; Company 2013</p>
-      </footer>
-    </div> <!-- /container -->
-
-
+	
+	{% block container %}
+	{% endblock %}
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

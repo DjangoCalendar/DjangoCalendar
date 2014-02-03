@@ -1,9 +1,10 @@
 {% load staticfiles %}
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>View/edit account details</title>
+  <title>User Account Details</title>
    <link href="{% static 'CalendarApp/jquery-ui.css' %}" rel="stylesheet">
    <link href="{% static 'CalendarApp/bootstrap.css' %}" rel="stylesheet">
 <link href="{% static 'CalendarApp/signin.css' %}" rel="stylesheet">
@@ -11,7 +12,7 @@
 <script src="{% static 'CalendarApp/js/jquery-ui.js' %}"></script>
   <script>
   $(function() {
-    $( "#tabs" ).tabs();
+    $( "#tabs" ).tabs({ active: {{ activetab }} });
   });
   </script>
   <style>
@@ -32,35 +33,70 @@
   <div id="tabs-1">
    
     <div class="container">
-
-      <form class="form-signin" role="form">
-        <h2 class="form-signin-heading">Account details</h2>
-        <input type="text" class="form-control" placeholder="Name" required autofocus>
-        <input type="text" class="form-control" placeholder="Surname" required autofocus>
-     
-        <input type="text" class="form-control" placeholder="Email address" required autofocus>
-       <input type="text" class="form-control" placeholder="Facebook id" required autofocus>
-       <input type="text" class="form-control" placeholder="GG number" required autofocus>
-    
-         <label class="checkbox">
+      <form class="form-signin" role="form" action="" method="POST">
+      		{% if message %}
+				<div class="alert">  
+ 					<a class="close" data-dismiss="alert">×</a>  
+  					<strong>Warning!</strong> <br> {{ message }}  
+				</div> 
+			{% endif %}
+				{{ detailform.Login.errors }} 
+				{{ detailform.Login }}
+				<br>
+				{{ detailform.Email.errors }}
+				{{ detailform.Email }}
+				<br>
+				{{ detailform.FirstName.errors }}
+				{{ detailform.FirstName }}
+				<br>
+				{{ detailform.LastName.errors }}
+				{{ detailform.LastName }}
+				<br>
+				{{ detailform.GGNumber.errors }}
+				{{ detailform.GGNumber }}
+				<br>
+				{{ detailform.FacebookId.errors }}
+				{{ detailform.FacebookId }}
+				<br>
+				<input type="hidden" name="tab" value="0">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
       </form>
-    </div> <!-- /container -->
+    </div>
   </div>
   <div id="tabs-2">
-   <form class="form-signin" role="form">
+   <!-- <form class="form-signin" role="form">
         <h2 class="form-signin-heading">Change password</h2>
         <input type="password" class="form-control" placeholder="Old password" required>
         <input type="password" class="form-control" placeholder="New password" required>
         <input type="password" class="form-control" placeholder="Re type new password" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
       </form>
-
+ 	-->
+ 		<form class="form-signin" role="form" method="POST" action="">
+ 			{% if messagepassword %}
+				<div class="alert">  
+ 					<a class="close" data-dismiss="alert">×</a>  
+  					<strong>Warning!</strong> <br> {{ messagepassword }}  
+				</div> 
+			{% endif %}
+			{{ passwordform.OldPassword.errors }} 
+			{{ passwordform.OldPassword }}
+			<br>
+			{{ passwordform.NewPassword.errors }}
+			{{ passwordform.NewPassword }}
+			<br>
+			{{ passwordform.RepeatNewPassword.errors }}
+			{{ passwordform.RepeatNewPassword }}
+			<br>
+			<input type="hidden" name="tab" value="1">
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+ 		</form>
   </div>
   <div id="tabs-3">
-    <form class="form-signin" role="form">
+    <form class="form-signin" action="" method="POST" role="form">
             <h2 class="form-signin-heading">Remove your account</h2>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Remove account</button>
+            <input type="hidden" name="tab" value="2">
+        <button class="btn btn-lg btn-primary btn-block" onclick="return confirm('Are you sure you want to delete account ?')" type="submit">Remove account</button>
       </form>
   </div>
 </div>

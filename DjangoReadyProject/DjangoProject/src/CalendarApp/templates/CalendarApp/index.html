@@ -1,5 +1,79 @@
 {% extends "CalendarApp/master.html" %}
-{% block content %}
+{% block userMenu %}
+	{% if LoggedIn == True %}
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="accountdetails">Account details</a></li>
+          <li><a href="logout">Logout</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Bla bla</a></li>
+        </ul>
+      </li>
+	{% else %}
+		<li class="active"><a href="login">Login</a></li>
+      	<li><a href="register">Register</a></li>
+	{% endif %}
+{% endblock %}
+
+{% block userInfo %}
+	{% if LoggedIn == True %}
+		<li class="navbar-brand"> Logged In: {{ user }}  </li>
+	{% endif %}
+{% endblock %}
+
+{% block container %}
+	{% if LoggedIn == False %}
+    	<!-- Main jumbotron for a primary marketing message or call to action -->
+    	<div class="jumbotron">
+      		<div class="container">
+      		{{ Message }}
+        		<h1>Welcome to DJango Calendar</h1>
+        		<p>This is the main page of the project. Ave.</p>
+        		<p><a class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a></p>
+      		</div>
+   		 </div>
+
+    	 <div class="container">
+      	 <!-- Example row of columns -->
+      	 <div class="row">
+         <div class="col-md-4">
+          <h2>About the procjet</h2>
+          <p>This project was created by Mateusz Bacal, Michal Kaminski and Wojciech Kura</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+         </div>
+         <div class="col-md-4">
+          <h2>Concept of the project</h2>
+          <p>Concept of the project is unknown.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+         </div>
+         <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+         </div>
+      	 </div>
+      	<hr>
+     		<footer>
+        		<p>&copy; Company 2013</p>
+      		</footer>
+    	</div> <!-- /container -->
+    {% else %}
+    	<div class="jumbotron">
+      		<div class="container">
+        		<h1>You're logged in</h1>
+        		<p>This is the main page of the project. Ave.</p>
+        			<hr>
+     		<footer>
+        		<p>&copy; Company 2013</p>
+      		</footer>
+      		</div>
+   		 </div>
+	{% endif %}
+{% endblock %}
+
+
+<!--{% block content %}
 <h1 style="text-align:center; float:left;">
 {% if LoggedIn == True %}
 <a href="./ggmessage">Send Test GG Message</a>
@@ -9,4 +83,4 @@
 	{{ welcome }}
 	<li><a href="./login">Logowanie</a></li>
 </h1>
-{% endblock %} 
+{% endblock %} -->

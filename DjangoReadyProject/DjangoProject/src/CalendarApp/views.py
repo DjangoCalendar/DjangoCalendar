@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout,authenticate,login
-from DataUtil import Page,GeneratePassword
+from DataUtil import Page,GeneratePassword, GetLoggedUser
 from CalendarApp.forms import LoginForm,RegisterForm, ChangePasswordForm
 from CalendarApp.models import Accounts
 from CalendarApp.DataUtil import SendGeneretatedPassword,SendGGMessage
@@ -23,14 +23,24 @@ def index(request):
     except Exception:
         isLogged = False
         username = ''
-    return render_to_response(Page['Index'], {'Message':"Hello, world. You're at the Main Page.",'LoggedIn':isLogged,'Nick':username})
+    return render_to_response(Page['Index'], {'Message':"Hello, world. You're at the Main Page.",'LoggedIn':isLogged,'user':username})
 
 def detail(request, poll_id):
     return HttpResponse("You're looking at ID %s." % poll_id)
 
+@csrf_exempt
+@login_required
 def accountdetails(request):
-    return render_to_response(Page['Accountdetails'], {'Message':"Hello, world. See account details",'LoggedIn':False,})
-
+    if request.method == 'GET':
+        loggeduser = GetLoggedUser(request)
+        useraccounts = loggeduser.accounts
+        detailForm = RegisterForm(initial={'Login':loggeduser.username, 'Email':loggeduser.email,'FirstName':loggeduser.first_name,'LastName':loggeduser.last_name, 'GGNumber':useraccounts.GGNumber, 'FacebookId':useraccounts.FacebookId})
+        detailForm.fields['Email'].widget.attrs['readonly'] = True
+        passwordForm = ChangePasswordForm()
+        return render_to_response(Page['Accountdetails'],{'detailform':detailForm,'passwordform':passwordForm, 'activetab' : 0})
+    if request.method == 'POST':
+        tab = request.POST['tab']
+        return options[tab](request,Page['Accountdetails'])
 
 def results(request, poll_id):
     return HttpResponse("You're looking at the results of ID %s." % poll_id)
@@ -81,7 +91,7 @@ def register(request):
             inf = regForm.cleaned_data
             email1 = inf['Email']
             testUser = User.objects.filter(email=email1)
-            if testUser is not None:
+            if testUser:
                 return render_to_response(Page['Register'], {'error':'Account Not Created. \n There is already account on this email','form':regForm})
             login = inf['Login']
             passw= GeneratePassword()
@@ -95,7 +105,7 @@ def register(request):
                 acc = Accounts(Login=user,GGNumber=ggnumber,FacebookId=facebId)
                 acc.save()
                 SendGeneretatedPassword(login,passw)
-                return render_to_response(Page['Register'], {'error':'Account Created. \n We send password on your email'})
+                return render_to_response(Page['Index'], {'Message':'Account Created. \n We send password on your email'})
             except Exception, e:
                 errorMsg = e.message
                 return render_to_response(Page['Register'], {'error':errorMsg,'form':RegisterForm()})
@@ -147,3 +157,71 @@ def ggmessage_view(request):
         return HttpResponse('Wyslanie wiadomosci na gg powiodlo sie')
     except Exception,e:
         return HttpResponse('Blad w ggmessage_view {0}'.format(e.message))
+    
+
+def removeUser(request,url):
+    user = GetLoggedUser(request)
+    user.delete()
+    return logout_view(request)
+
+def changeUserPassword(request,url):
+    loggeduser = GetLoggedUser(request)
+    useraccounts = loggeduser.accounts
+    detailform = RegisterForm(initial={'Login':loggeduser.username, 'Email':loggeduser.email,'FirstName':loggeduser.first_name,'LastName':loggeduser.last_name, 'GGNumber':useraccounts.GGNumber, 'FacebookId':useraccounts.FacebookId})
+    detailform.fields['Email'].widget.attrs['readonly'] = True
+    if request.method == 'POST':
+        passwordform = ChangePasswordForm(request.POST)
+        if passwordform.is_valid():
+            cd = passwordform.cleaned_data
+            oldpassword = cd['OldPassword']
+            newpassword = cd['NewPassword']
+            repeatnewpassword = cd['RepeatNewPassword']  
+            if loggeduser.check_password(oldpassword):
+                if newpassword == repeatnewpassword:
+                    if newpassword == oldpassword:
+                        render = render_to_response(url,{'messagepassword':'Old and New Password are the same','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+                    else:
+                        loggeduser.set_password(newpassword)
+                        loggeduser.save()
+                        render = render_to_response(url,{'messagepassword':'Password changed successfully','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+                else:
+                    render = render_to_response(url,{'messagepassword':'You type two different new passwords - correct it','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+            else:
+                render = render_to_response(url,{'messagepassword':'Your actual password is not correct','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+        else:
+            render = render_to_response(url,{'passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+    else:
+        passwordform =  ChangePasswordForm()
+        render = render_to_response(url,{'passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+    return render
+
+def updateUserDetails(request,url):
+    passwordform = ChangePasswordForm()
+    detailform = RegisterForm(request.POST)
+    if detailform.is_valid():
+        user = GetLoggedUser(request)
+        useraccounts = user.accounts
+        cd = detailform.cleaned_data
+        login = cd['Login']
+        firstname = cd['FirstName']
+        lastname = cd['LastName']
+        ggnumber = cd['GGNumber']
+        facebookid = cd['FacebookId']
+        usercounter = User.objects.filter(username = login).count()
+        message = "Details Updated."
+        if user.username != login:
+            if usercounter > 0:
+                message += " Unable to change user nick. Nick already exists. "
+            else:
+                user.username = login
+        user.first_name = firstname
+        user.last_name = lastname
+        user.save()
+        useraccounts.GGNumber = ggnumber
+        useraccounts.FacebookId = facebookid
+        useraccounts.save()
+        return render_to_response(url,{'message': message,'detailform':detailform,'passwordform':passwordform,'activetab':0})
+    else:
+        return render_to_response(url,{'message': 'Some Fields are incorrect - correct it','detailform':detailform,'passwordform':passwordform,'activetab':0})
+    
+options = {'2':removeUser, '1':changeUserPassword, '0':updateUserDetails}
