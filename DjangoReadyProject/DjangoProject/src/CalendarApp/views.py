@@ -10,7 +10,7 @@ from CalendarApp.models import Accounts
 from CalendarApp.DataUtil import SendGeneretatedPassword,SendGGMessage
 from django.contrib.sessions.models import Session
 from django.http.response import HttpResponseRedirect
-
+Development = True
 
 def index(request):
     try:
@@ -20,10 +20,12 @@ def index(request):
         user = User.objects.get(pk=uid)
         isLogged = user is not None
         username = user.username
+        avatarfile = user.accounts.AvatarId
     except Exception:
         isLogged = False
         username = ''
-    return render_to_response(Page['Index'], {'Message':"Hello, world. You're at the Main Page.",'LoggedIn':isLogged,'user':username})
+        avatarfile=''
+    return render_to_response(Page['Index'], {'Message':"Hello, world. You're at the Main Page.",'LoggedIn':isLogged,'user':username,'avatarfile':avatarfile})
 
 def detail(request, poll_id):
     return HttpResponse("You're looking at ID %s." % poll_id)
@@ -37,7 +39,7 @@ def accountdetails(request):
         detailForm = RegisterForm(initial={'Login':loggeduser.username, 'Email':loggeduser.email,'FirstName':loggeduser.first_name,'LastName':loggeduser.last_name, 'GGNumber':useraccounts.GGNumber, 'FacebookId':useraccounts.FacebookId})
         detailForm.fields['Email'].widget.attrs['readonly'] = True
         passwordForm = ChangePasswordForm()
-        return render_to_response(Page['Accountdetails'],{'detailform':detailForm,'passwordform':passwordForm, 'activetab' : 0})
+        return render_to_response(Page['Accountdetails'],{'detailform':detailForm,'passwordform':passwordForm, 'activetab' : 0, 'avatarfile':str(useraccounts.AvatarId[:3])})
     if request.method == 'POST':
         tab = request.POST['tab']
         return options[tab](request,Page['Accountdetails'])
@@ -93,18 +95,25 @@ def register(request):
             testUser = User.objects.filter(email=email1)
             if testUser:
                 return render_to_response(Page['Register'], {'error':'Account Not Created. \n There is already account on this email','form':regForm})
-            login = inf['Login']
-            passw= GeneratePassword()
+            login = inf['Login'].strip()
+            if Development:
+                passw = "Master1234"
+            else:
+                passw= GeneratePassword()
             firstName = inf['FirstName']
             lastName = inf['LastName']
             ggnumber = inf['GGNumber']
+            numericGG = int(ggnumber)
+            if numericGG < 100:
+                return render_to_response(Page['Register'], {'error':'Account Not Created. \n GG Number is not correct','form':regForm})  
             facebId = inf['FacebookId']
             try:
                 user = User.objects.create_user(username=login,password=passw,email=email1, first_name=firstName,last_name=lastName)
                 user.save()
                 acc = Accounts(Login=user,GGNumber=ggnumber,FacebookId=facebId)
                 acc.save()
-                SendGeneretatedPassword(login,passw)
+                if Development == False:
+                    SendGeneretatedPassword(login,passw)
                 return render_to_response(Page['Index'], {'Message':'Account Created. \n We send password on your email'})
             except Exception, e:
                 errorMsg = e.message
@@ -179,28 +188,28 @@ def changeUserPassword(request,url):
             if loggeduser.check_password(oldpassword):
                 if newpassword == repeatnewpassword:
                     if newpassword == oldpassword:
-                        render = render_to_response(url,{'messagepassword':'Old and New Password are the same','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+                        render = render_to_response(url,{'messagepassword':'Old and New Password are the same','passwordform':passwordform, 'detailform':detailform,'activetab':'1', 'avatarfile':useraccounts.AvatarId[:3]})
                     else:
                         loggeduser.set_password(newpassword)
                         loggeduser.save()
-                        render = render_to_response(url,{'messagepassword':'Password changed successfully','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+                        render = render_to_response(url,{'messagepassword':'Password changed successfully','passwordform':passwordform, 'detailform':detailform,'activetab':'1', 'avatarfile':useraccounts.AvatarId[:3]})
                 else:
-                    render = render_to_response(url,{'messagepassword':'You type two different new passwords - correct it','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+                    render = render_to_response(url,{'messagepassword':'You type two different new passwords - correct it','passwordform':passwordform, 'detailform':detailform,'activetab':'1', 'avatarfile':useraccounts.AvatarId[:3]})
             else:
-                render = render_to_response(url,{'messagepassword':'Your actual password is not correct','passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+                render = render_to_response(url,{'messagepassword':'Your actual password is not correct','passwordform':passwordform, 'detailform':detailform,'activetab':'1', 'avatarfile':useraccounts.AvatarId[:3]})
         else:
-            render = render_to_response(url,{'passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+            render = render_to_response(url,{'passwordform':passwordform, 'detailform':detailform,'activetab':'1', 'avatarfile':useraccounts.AvatarId[:3]})
     else:
         passwordform =  ChangePasswordForm()
-        render = render_to_response(url,{'passwordform':passwordform, 'detailform':detailform,'activetab':'1'})
+        render = render_to_response(url,{'passwordform':passwordform, 'detailform':detailform,'activetab':'1', 'avatarfile':useraccounts.AvatarId[:3]})
     return render
 
 def updateUserDetails(request,url):
     passwordform = ChangePasswordForm()
     detailform = RegisterForm(request.POST)
+    user = GetLoggedUser(request)
+    useraccounts = user.accounts
     if detailform.is_valid():
-        user = GetLoggedUser(request)
-        useraccounts = user.accounts
         cd = detailform.cleaned_data
         login = cd['Login']
         firstname = cd['FirstName']
@@ -220,8 +229,21 @@ def updateUserDetails(request,url):
         useraccounts.GGNumber = ggnumber
         useraccounts.FacebookId = facebookid
         useraccounts.save()
-        return render_to_response(url,{'message': message,'detailform':detailform,'passwordform':passwordform,'activetab':0})
+        return render_to_response(url,{'message': message,'detailform':detailform,'passwordform':passwordform,'activetab':0, 'avatarfile':useraccounts.AvatarId[:3]})
     else:
-        return render_to_response(url,{'message': 'Some Fields are incorrect - correct it','detailform':detailform,'passwordform':passwordform,'activetab':0})
+        return render_to_response(url,{'message': 'Some Fields are incorrect - correct it','detailform':detailform,'passwordform':passwordform,'activetab':0, 'avatarfile':useraccounts.AvatarId[:3]})
     
-options = {'2':removeUser, '1':changeUserPassword, '0':updateUserDetails}
+def updateUserAvatar(request, url):
+    loggeduser = GetLoggedUser(request)
+    useraccounts = loggeduser.accounts
+    detailform = RegisterForm(initial={'Login':loggeduser.username, 'Email':loggeduser.email,'FirstName':loggeduser.first_name,'LastName':loggeduser.last_name, 'GGNumber':useraccounts.GGNumber, 'FacebookId':useraccounts.FacebookId})
+    detailform.fields['Email'].widget.attrs['readonly'] = True
+    passwordform = ChangePasswordForm()
+    avatarfile = request.POST['avatar']
+    useraccounts.AvatarId = avatarfile;
+    loggeduser.save()
+    useraccounts.save()
+    return render_to_response(url,{'messageavatar': "Avatar Updated",'detailform':detailform,'passwordform':passwordform,'activetab':3, 'avatarfile':useraccounts.AvatarId[:3]})
+    
+    
+options = {'2':removeUser, '1':changeUserPassword, '0':updateUserDetails, '3':updateUserAvatar}

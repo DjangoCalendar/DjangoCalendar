@@ -10,10 +10,31 @@
 <link href="{% static 'CalendarApp/signin.css' %}" rel="stylesheet">
 <script src="{% static 'CalendarApp/js/jquery-2.0.3.min.js' %}"></script>
 <script src="{% static 'CalendarApp/js/jquery-ui.js' %}"></script>
-  <script>
+ <script>
+  selectedAv = ''
+  
+  function setBorder(id)
+  {
+	  document.getElementById('av1').style["border"] = '';
+	  document.getElementById('av2').style["border"] = '';
+	  document.getElementById('av3').style["border"] = '';
+	  document.getElementById('av4').style["border"] = '';
+	  document.getElementById('av5').style["border"] = '';
+	  document.getElementById('av6').style["border"] = '';
+	  document.getElementById('av7').style["border"] = '';
+	  document.getElementById(id).style["border"] = '2px solid black';
+	  selectedAv = id;
+  }
+  
+  function setSelectedAvatar()
+  {
+	  document.getElementById("avatar").value = selectedAv+".jpg";
+  }
+  
   $(function() {
     $( "#tabs" ).tabs({ active: {{ activetab }} });
   });
+  
   </script>
   <style>
   <!--
@@ -23,12 +44,13 @@
   --></style>
 </head>
 <body>
- 
+<a href="/calendar/"><img src="{% static 'CalendarApp/img/back.jpg' %}" alt="Back to Main Page" height="80" width="80"> </a>
 <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Account details</a></li>
     <li><a href="#tabs-2">Change password</a></li>
     <li><a href="#tabs-3">Manage your account</a></li>
+    <li><a href="#tabs-4">My Avatar</a></li>
   </ul>
   <div id="tabs-1">
    
@@ -64,14 +86,6 @@
     </div>
   </div>
   <div id="tabs-2">
-   <!-- <form class="form-signin" role="form">
-        <h2 class="form-signin-heading">Change password</h2>
-        <input type="password" class="form-control" placeholder="Old password" required>
-        <input type="password" class="form-control" placeholder="New password" required>
-        <input type="password" class="form-control" placeholder="Re type new password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
-      </form>
- 	-->
  		<form class="form-signin" role="form" method="POST" action="">
  			{% if messagepassword %}
 				<div class="alert">  
@@ -99,8 +113,86 @@
         <button class="btn btn-lg btn-primary btn-block" onclick="return confirm('Are you sure you want to delete account ?')" type="submit">Remove account</button>
       </form>
   </div>
+  
+  <div id="tabs-4">
+		   <center>
+		    {% if messageavatar %}
+				<div class="alert">  
+  					{{ messageavatar }}  
+				</div> 
+			{% endif %}
+		   </center>
+		   <table align="center">
+		   		 {% if avatarfile == 'av1' %}
+		   		 	<tr id="av1" style="border: 2px solid black">
+		   		 {% else %}
+		   		 	<tr id="av1">
+		   		 {% endif %}
+		   			<td>
+		   				<img src="/calendar/media/img/av1.jpg" onclick="setBorder('av1')" alt="Avatar1" height="100" width="100">
+		   			</td>
+		   		</tr>
+		   		{% if avatarfile == 'av2' %}
+		   		 	<tr id="av2" style="border: 2px solid black">
+		   		 {% else %}
+		   		 	<tr id="av2">
+		   		 {% endif %}
+		   			<td>
+		   				<img src="/calendar/media/img/av2.jpg"  onclick="setBorder('av2')" alt="Avatar2" height="100" width="100">
+		   			</td>
+		   		</tr>
+		   		{% if avatarfile == 'av3' %}
+		   		 	<tr id="av3" style="border: 2px solid black">
+		   		 {% else %}
+		   		 	<tr id="av3">
+		   		 {% endif %}
+		   			<td>
+		   				<img src="/calendar/media/img/av3.jpg"  onclick="setBorder('av3')" alt="Avatar3" height="100" width="100">
+		   			</td>
+		   		</tr>
+		   		{% if avatarfile == 'av4' %}
+		   		 	<tr id="av4" style="border: 2px solid black">
+		   		 {% else %}
+		   		 	<tr id="av4">
+		   		 {% endif %}
+		   			<td>
+		   				<img src="/calendar/media/img/av4.jpg"  onclick="setBorder('av4')" alt="Avatar4" height="100" width="100">
+		   			</td>
+		   		</tr>
+		   		{% if avatarfile == 'av5' %}
+		   		 	<tr id="av5" style="border: 2px solid black">
+		   		 {% else %}
+		   		 	<tr id="av5">
+		   		 {% endif %}
+		   			<td>
+		   				<img src="/calendar/media/img/av5.jpg"  onclick="setBorder('av5')" alt="Avatar5" height="100" width="100">
+		   			</td>
+		   		</tr>
+		   		 {% if avatarfile == 'av6' %}
+		   		 	<tr id="av6" style="border: 2px solid black">
+		   		 {% else %}
+		   		 	<tr id="av6">
+		   		 {% endif %}
+		   			<td>
+		   				<img src="/calendar/media/img/av6.jpg"  onclick="setBorder('av6')" alt="Avatar6" height="100" width="100">
+		   			</td>
+		   		</tr>
+		   		 {% if avatarfile == 'av7' %}
+		   		 	<tr id="av7" style="border: 2px solid black">
+		   		 {% else %}
+		   		 	<tr id="av7">
+		   		 {% endif %}
+		   			<td>
+		   				<img src="/calendar/media/img/av7.jpg"  onclick="setBorder('av7')" alt="Avatar7" height="100" width="100">
+		   			</td>
+		   		</tr>
+		   </table>
+		   <form align="center" class="form-signin" role="form" method="POST" action="">
+		   			<input type="hidden" name="tab" value="3">
+		   			<input type="hidden" name="avatar" id="avatar" value="">
+					<button class="btn btn-lg btn-primary btn-block" onclick="setSelectedAvatar()" type="submit">Save</button>
+		   </form>
+  </div>
 </div>
- 
- 
 </body>
 </html>

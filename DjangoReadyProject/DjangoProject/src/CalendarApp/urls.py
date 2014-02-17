@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-
+from django.conf import settings
 from CalendarApp import views
 
 urlpatterns = patterns('',
@@ -13,5 +13,14 @@ urlpatterns = patterns('',
     url(r'^changepassword', views.changepassword, name='changepassword'),
     url(r'^ggmessage', views.ggmessage_view, name='ggmessage'),
     url(r'^accountdetails', views.accountdetails, name='accountdetails'),
-    
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT,
+        })
 )
+
+#if settings.DEBUG:
+#    urlpatterns += patterns('',
+#        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+#            'document_root': settings.MEDIA_ROOT,
+#        }),
+#)

@@ -7,7 +7,6 @@
           <li><a href="accountdetails">Account details</a></li>
           <li><a href="logout">Logout</a></li>
           <li class="divider"></li>
-          <li><a href="#">Bla bla</a></li>
         </ul>
       </li>
 	{% else %}
@@ -17,8 +16,9 @@
 {% endblock %}
 
 {% block userInfo %}
+{% load staticfiles %}
 	{% if LoggedIn == True %}
-		<li class="navbar-brand"> Logged In: {{ user }}  </li>
+		<li class="navbar-brand"> Logged In: {{ user }} <img src="/calendar/media/img/{{ avatarfile }}" alt="" height="40" width="40"></li>
 	{% endif %}
 {% endblock %}
 
@@ -71,16 +71,3 @@
    		 </div>
 	{% endif %}
 {% endblock %}
-
-
-<!--{% block content %}
-<h1 style="text-align:center; float:left;">
-{% if LoggedIn == True %}
-<a href="./ggmessage">Send Test GG Message</a>
-<li><a href="./logout">Log Out {{ Nick }}</a></li>
-{% endif %}
-	{{ Message }}
-	{{ welcome }}
-	<li><a href="./login">Logowanie</a></li>
-</h1>
-{% endblock %} -->

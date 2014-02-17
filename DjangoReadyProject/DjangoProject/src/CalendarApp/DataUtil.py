@@ -4,16 +4,15 @@ Created on 11 sty 2014
 @author: Mateusz Bacal
 '''
 import string
+import smtplib
 from time import time
 from itertools import chain
 from random import seed, choice, sample
-import smtplib
 from django.contrib.auth.models import User
 from GGLibrary.Exceptions import GGNotLogged
 from GGLibrary.pygglib import GGSession
 from django.contrib.sessions.models import Session
-#from GGConstans import *
-#from Contacts import *
+#from FBPack.facehack import FaceHack
 Page = {
     'Master':'CalendarApp/master.html',
     'Index':'CalendarApp/index.html',
@@ -112,3 +111,13 @@ def GetLoggedUser(request):
         return user
     except Exception:
         return None
+
+# djangocalendar@gmail.com
+# Master1234
+#def SendFbMessage(text, fbId):
+#    try :
+#        fh = FaceHack()
+#        fh.login("bonzai1990@o2.pl","master1")
+#        fh.status("Hakkin Facebook")      
+#    except Exception,e:
+#        raise Exception("Exception from Facebook Message Sender : {0}.\n".format(e.message))
