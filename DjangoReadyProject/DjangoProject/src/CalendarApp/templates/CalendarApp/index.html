@@ -4,14 +4,15 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options<b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="accountdetails">Account details</a></li>
-          <li><a href="logout">Logout</a></li>
+          <li><a href="/calendar/accountdetails">Account details</a></li>
+          <li><a href="/calendar/year">Yearly Calendar</a></li>
           <li class="divider"></li>
+          <li><a href="/calendar/logout">Logout</a></li>
         </ul>
       </li>
 	{% else %}
-		<li class="active"><a href="login">Login</a></li>
-      	<li><a href="register">Register</a></li>
+		<li class="active"><a href="/calendar/login">Login</a></li>
+      	<li><a href="/calendar/register">Register</a></li>
 	{% endif %}
 {% endblock %}
 
@@ -61,8 +62,12 @@
     {% else %}
     	<div class="jumbotron">
       		<div class="container">
-        		<h1>You're logged in</h1>
+					{% block main %}
+					<h1>You're logged in</h1>
         		<p>This is the main page of the project. Ave.</p>
+        		
+						<!-- trutu  -->
+					{% endblock %}
         			<hr>
      		<footer>
         		<p>&copy; Company 2013</p>

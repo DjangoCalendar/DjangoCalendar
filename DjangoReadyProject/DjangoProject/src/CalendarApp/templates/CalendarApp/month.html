@@ -1,0 +1,78 @@
+
+{% extends "CalendarApp/index.html" %}
+{% block main %}
+<!-- <a href= "{% url "CalendarApp.views.month" year month "prev" %}">&lt;&lt; Prev</a>
+<a href= "{% url "CalendarApp.views.month" year month "next" %}">Next &gt;&gt;</a> -->
+<table>
+<tr>
+	<td colspan="2" align="center">
+		<a href="{% url "CalendarApp.views.main" year %}"><img src="/calendar/media/img/up.png" width="40" height="40" alt=""></a>
+	</td>
+</tr>
+<tr>
+	<td>
+		<a href="{% url "CalendarApp.views.month" year month "prev" %}"><img src="/calendar/media/img/prev.png" width="40" height="40" alt=""></a>
+	</td>
+	<td>
+		<a href="{% url "CalendarApp.views.month" year month "next" %}"><img src="/calendar/media/img/next.png" width="40" height="40" alt=""></a>
+	</td>
+</tr>
+</table>
+					{% if reminders %}
+						<!-- <div class="reminders"> -->
+						<div class="alert alert-success">
+   						<strong>Alerts For Today:</strong>
+   						<button type="button" class="close" data-dismiss="alert">x</button>
+  						  {% for reminder in reminders %}<p> {{ reminder.short|safe }}</p>
+  						  {% endfor %}
+						</div>
+					{% endif %}
+<div class="month">
+    <table class="bordered-table center-table">
+	<thead>
+    <tr>
+        <th colspan="7" align="center"><h2>{{ mname }} {{ year }}</h2></th>
+    </tr>
+    <tr>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+        <th>Sun</th>
+    </tr>
+	</thead>
+	<tbody>
+    {% for week in month_days %}
+        <tr>
+        {% for day, entries, current in week %}
+
+            <!-- TD style: empty | day | current; onClick handler and highlight  -->
+            <td class= {% if day == 0 %}"empty"{% endif %}
+            {% if day != 0 and not current %}"day"{% endif %}
+            {% if day != 0 and current %}"current"{% endif %}
+            {% if day != 0 %}
+                onClick="parent.location='{% url "CalendarApp.views.day" year month day %}'"
+                onMouseOver="this.bgColor='white';"
+                onMouseOut="this.bgColor='#eeeeee';"
+            {% endif %} >
+
+            <!-- Day number and entry snippets -->
+            {% if day != 0 %}
+                {{ day }}
+                {% for entry in entries %}
+                    <br />
+                    <!-- <b>{{ entry.creator }}</b>:  -->{{ entry.short|safe }}
+                {% endfor %}
+            {% endif %}
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <div class="clear"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "CalendarApp/index.html" %}
+ <!--... -->
+{% block main %}
+<!--<a href="{% url "CalendarApp.views.main" year|add:'-3' %}">&lt;&lt; Prev</a>
+<a href="{% url "CalendarApp.views.main" year|add:'3' %}">Next &gt;&gt;</a>-->
+<a href="{% url "CalendarApp.views.main" year|add:'-3' %}"><img src="/calendar/media/img/prev.png" width="40" height="40" alt=""></a>
+<a href="{% url "CalendarApp.views.main" year|add:'3' %}"><img src="/calendar/media/img/next.png" width="40" height="40" alt=""></a>
+{% if reminders %}
+	<div class="alert alert-success">
+   						<strong>Alerts For Today:</strong>
+   						<button type="button" class="close" data-dismiss="alert">x</button>
+  						  {% for reminder in reminders %}<p> {{ reminder.short|safe }}</p>
+  						  {% endfor %}
+						</div>
+{% endif %}
+    {% for year, months in years %}
+       <!-- <div class="clear"></div> -->
+        <table class="bordered-table">
+        <thead>
+        	<tr>
+        	<th colspan="6">
+        		<h2 align="center">{{ year }}</h2>
+        	</th>
+        	</tr>
+        </thead>
+        <tbody>
+        	<tr>
+        {% for month in months %}
+            <td class={% if month.current %}"current"{% endif %} {% if not month.current %}"month"{% endif %}  align="center" width="20%">
+            	<!-- <div class=
+            	{% if month.current %}"current"{% endif %}
+           		{% if not month.current %}"month"{% endif %} >  -->
+                	{% if month.entry %}<b>{% endif %}
+                	<a class ={% if month.current %}"current"{% endif %}
+           		{% if not month.current %}"month"{% endif %}  href="{% url "CalendarApp.views.month" year month.n %}">{{ month.name }}</a>
+                	{% if month.entry %}</b>{% endif %}
+            	<!-- </div>  -->
+            </td>
+			{% if month.n == 6 %}</tr><tr>{% endif %}
+         <!--{% if month.n == 6 %}<br />{% endif %} -->
+        {% endfor %}
+        </tr>
+        </tbody>
+        </table>
+        <br/>
+    {% endfor %}
+{% endblock %}

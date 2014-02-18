@@ -1,5 +1,4 @@
 {% load staticfiles %}
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,6 +9,7 @@
 <link href="{% static 'CalendarApp/signin.css' %}" rel="stylesheet">
 <script src="{% static 'CalendarApp/js/jquery-2.0.3.min.js' %}"></script>
 <script src="{% static 'CalendarApp/js/jquery-ui.js' %}"></script>
+     <script src="{% static 'CalendarApp/js/bootstrap-alert.js' %}"></script>
  <script>
   selectedAv = ''
   
@@ -57,7 +57,7 @@
     <div class="container">
       <form class="form-signin" role="form" action="" method="POST">
       		{% if message %}
-				<div class="alert">  
+				<div class="alert alert-success">  
  					<a class="close" data-dismiss="alert">×</a>  
   					<strong>Warning!</strong> <br> {{ message }}  
 				</div> 
@@ -88,7 +88,7 @@
   <div id="tabs-2">
  		<form class="form-signin" role="form" method="POST" action="">
  			{% if messagepassword %}
-				<div class="alert">  
+				<div class="alert alert-success">  
  					<a class="close" data-dismiss="alert">×</a>  
   					<strong>Warning!</strong> <br> {{ messagepassword }}  
 				</div> 
@@ -117,7 +117,8 @@
   <div id="tabs-4">
 		   <center>
 		    {% if messageavatar %}
-				<div class="alert">  
+				<div class="alert alert-success">  
+  						<a class="close" data-dismiss="alert">x</a>
   					{{ messageavatar }}  
 				</div> 
 			{% endif %}
