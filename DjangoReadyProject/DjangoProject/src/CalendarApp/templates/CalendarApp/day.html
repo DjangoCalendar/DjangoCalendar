@@ -2,22 +2,26 @@
 {% block main %}
 	<a href="{% url "CalendarApp.views.month" year month %}"><img src="/calendar/media/img/up.png" width="40" height="40" alt=""></a>
 <h4>My Entries</h4>
-<form action="{% url "CalendarApp.views.day" year month day %}" method="POST"> {% csrf_token %}
+<div class="container">
+<form class="form-signin" action="{% url "CalendarApp.views.day" year month day %}" method="POST"> {% csrf_token %}
 
 {{ entries.management_form }}
 
 {% for entry in entries.forms %}
     {{ entry.id }}
-    <div class="entry">
-        <div class="del">Delete {{ entry.DELETE }}</div>
-        <div id="inp1">
-            <p>Title: {{ entry.title }}</p>
-            <p>Snippet: {{ entry.snippet }}</p>
-        </div>
-        <p>Remind: {{ entry.remind }}</p>
+        <label class="checkbox">
+        Delete {{ entry.DELETE }}
+        </label>
+            Title: {{ entry.title }}
+            Snippet: {{ entry.snippet }}
+        <label class="checkbox">
+        Remind {{ entry.remind }}
+        {{ entry.remind.errors }}
+        </label>
         {{ entry.body }}
-    </div>
 {% endfor %}
-
-<input type="submit" value="Save" /> </form>
+<br/>
+<br/>
+<button class="btn btn-lg btn-primary btn-block" style="width: 40%; height: 70px" type="submit" value="Save">SAVE</button> </form>
+</div>
 {% endblock %}

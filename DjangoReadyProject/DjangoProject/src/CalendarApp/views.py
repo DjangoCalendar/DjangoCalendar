@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout,authenticate,login
 from DataUtil import Page,GeneratePassword, GetLoggedUser
-from CalendarApp.forms import LoginForm,RegisterForm, ChangePasswordForm
+from CalendarApp.forms import LoginForm,RegisterForm, ChangePasswordForm,\
+    EntryForm
 from CalendarApp.models import Accounts, Entry
 from CalendarApp.DataUtil import SendGeneretatedPassword,SendGGMessage
 from django.contrib.sessions.models import Session
@@ -85,7 +86,7 @@ def login_view(request):
             cd = form.cleaned_data
             nick = cd['Login']
             passw = cd['Password']
-            user = authenticate(username=nick, password=passw)
+            user = authenticate(username=nick.strip(), password=passw)
             if user is None:
                 renderer = render_to_response(Page['Login'],{'message':'Your login or password are incorrect','form':LoginForm()})
             else:
@@ -141,7 +142,7 @@ def register(request):
                 acc.save()
                 if Development == False:
                     SendGeneretatedPassword(login,passw)
-                return render_to_response(Page['Index'], {'Message':'Account Created. \n We send password on your email'})
+                return render_to_response(Page['Index'], {'Message':'Account Created. \n We send password on your email','LoggedIn':False})
             except Exception, e:
                 errorMsg = e.message
                 return render_to_response(Page['Register'], {'error':errorMsg,'form':RegisterForm()})
@@ -347,14 +348,23 @@ def month(request, year, month, change=None):
     # each day tuple will contain list of entries and 'current' indicator
     for day in month_days:
         entries = current = False   # are there entries for this day; current day?
+        tooltip = ""
         if day:
             entries = Entry.objects.filter(date__year=year, date__month=month, date__day=day)
             if not _show_users(request):
                 entries = entries.filter(creator=request.user)
             if day == nday and year == nyear and month == nmonth:
                 current = True
-
-        lst[week].append((day, entries, current))
+            #build string for tooltip
+            #if len(entries)!=0:
+            #    tooltip = ""
+            for e in entries:
+                tooltip+= e.title
+                if e.snippet:
+                    tooltip += ": "+e.snippet
+                tooltip+= "<br/>"
+                     
+        lst[week].append((day, entries, current,tooltip))
         if len(lst[week]) == 7:
             lst.append([])
             week += 1
@@ -367,7 +377,7 @@ def month(request, year, month, change=None):
 @login_required
 def day(request, year, month, day):
     """Entries for the day."""
-    EntriesFormset = modelformset_factory(Entry, extra=1, exclude=("creator", "date"),
+    EntriesFormset = modelformset_factory(Entry,form=EntryForm, exclude=("creator", "date"),
                                           can_delete=True)
     other_entries = []
     if _show_users(request):

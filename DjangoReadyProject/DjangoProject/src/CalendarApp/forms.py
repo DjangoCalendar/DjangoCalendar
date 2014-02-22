@@ -1,4 +1,5 @@
 from django import forms
+from CalendarApp.models import Entry
 
 class LoginForm(forms.Form):
     Login = forms.CharField(widget=forms.TextInput(attrs={ 'required': 'true', 'autofocus': 'true','placeholder': 'Username', 'class':'form-control' }), min_length=6,max_length=50, required= True,
@@ -22,3 +23,12 @@ class ChangePasswordForm(forms.Form):
                                error_messages={'required':'This is required field','max_length':'Password is to long - max 30','min_length':'You password is too short - at least 10 characters'})
     RepeatNewPassword =forms.CharField(widget=forms.PasswordInput(render_value=False,attrs={ 'required': 'true', 'autofocus': 'true','placeholder': 'Repeat New Password', 'class':'form-control' }), label='Repeat New Password:', max_length=30,min_length = 10, required=True,
                                error_messages={'required':'This is required field','max_length':'Password is to long - max 30','min_length':'You password is too short - at least 10 characters'})
+
+class EntryForm(forms.ModelForm):
+    class Meta:
+        model = Entry 
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Title', 'class':'form-control' }),required=False)
+    snippet = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Snippet', 'class':'form-control' }),required=False)
+    remind = forms.BooleanField(initial=False,required=False)
+    body = forms.Textarea(attrs={'rows':10, 'cols':40})
+        

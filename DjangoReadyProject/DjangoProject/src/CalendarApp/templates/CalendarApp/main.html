@@ -7,7 +7,7 @@
 <a href="{% url "CalendarApp.views.main" year|add:'3' %}"><img src="/calendar/media/img/next.png" width="40" height="40" alt=""></a>
 {% if reminders %}
 	<div class="alert alert-success">
-   						<strong>Alerts For Today:</strong>
+   						<strong>Alerts For Today and Tomorrow:</strong>
    						<button type="button" class="close" data-dismiss="alert">x</button>
   						  {% for reminder in reminders %}<p> {{ reminder.short|safe }}</p>
   						  {% endfor %}

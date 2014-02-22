@@ -1,8 +1,6 @@
 
 {% extends "CalendarApp/index.html" %}
 {% block main %}
-<!-- <a href= "{% url "CalendarApp.views.month" year month "prev" %}">&lt;&lt; Prev</a>
-<a href= "{% url "CalendarApp.views.month" year month "next" %}">Next &gt;&gt;</a> -->
 <table>
 <tr>
 	<td colspan="2" align="center">
@@ -21,13 +19,13 @@
 					{% if reminders %}
 						<!-- <div class="reminders"> -->
 						<div class="alert alert-success">
-   						<strong>Alerts For Today:</strong>
+   						<strong>Alerts For Today and Tomorrow:</strong>
    						<button type="button" class="close" data-dismiss="alert">x</button>
   						  {% for reminder in reminders %}<p> {{ reminder.short|safe }}</p>
   						  {% endfor %}
 						</div>
 					{% endif %}
-<div class="month">
+<div>
     <table class="bordered-table center-table">
 	<thead>
     <tr>
@@ -45,26 +43,36 @@
 	</thead>
 	<tbody>
     {% for week in month_days %}
-        <tr>
-        {% for day, entries, current in week %}
+        <tr class="tooltip-examples list-inline">
+        {% for day, entries, current, tooltip in week %}
 
             <!-- TD style: empty | day | current; onClick handler and highlight  -->
-            <td class= {% if day == 0 %}"empty"{% endif %}
+            <td  class= {% if day == 0 %}"empty"{% endif %}
             {% if day != 0 and not current %}"day"{% endif %}
             {% if day != 0 and current %}"current"{% endif %}
             {% if day != 0 %}
                 onClick="parent.location='{% url "CalendarApp.views.day" year month day %}'"
                 onMouseOver="this.bgColor='white';"
                 onMouseOut="this.bgColor='#eeeeee';"
+                data-toggle="tooltip"
+                data-original-title="{{ tooltip }}"
             {% endif %} >
 
             <!-- Day number and entry snippets -->
+            
             {% if day != 0 %}
-                {{ day }}
-                {% for entry in entries %}
-                    <br />
-                    <!-- <b>{{ entry.creator }}</b>:  -->{{ entry.short|safe }}
-                {% endfor %}
+                
+                {% if current %}
+                	<font color="red"><b>{{ day }}</b></font>
+               {% elif tooltip %}
+                	<b>{{ day }}</b>
+                {% else %}
+                	{{ day }}
+                {% endif %}
+                <!-- {% for entry in entries %}
+                    <br /> -->
+                    <!-- <b>{{ entry.creator }}</b>:  {{ entry.short|safe }}
+                {% endfor %}-->
             {% endif %}
             </td>
         {% endfor %}
@@ -74,5 +82,13 @@
     </table>
 
     <div class="clear"></div>
+    <script type="text/javascript">
+$(document).ready(function(){
+    $(".tooltip-examples td").tooltip({
+        placement : 'top', html: 'true',     'selector': '',
+        'container':'body'
+    });
+});
+</script>
 </div>
 {% endblock %}
